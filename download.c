@@ -88,19 +88,19 @@ char *getStockPrice(char *symbols)
 	return response;
 }
 
-int main(int argc, char *argv[])
-{
-	if (argc != 2)
-	{
-		fprintf(stderr, "Not enough Arguments\n");
-		return 1;
-	}
+// int main(int argc, char *argv[])
+// {
+// 	if (argc != 2)
+// 	{
+// 		fprintf(stderr, "Not enough Arguments\n");
+// 		return 1;
+// 	}
 
-	char *response = getStockPrice(argv[1]);
+// 	char *response = getStockPrice(argv[1]);
 
-	printf("%s\n", response);
+// 	printf("%s\n", response);
 
-	free(response);
+// 	free(response);
 
-	return 0;
-}
+// 	return 0;
+// }
