@@ -15,13 +15,15 @@ Stock *stock_make(cJSON *stockJSON)
 {
 	cJSON *open = cJSON_GetObjectItem(stockJSON, "open");
 	cJSON *close = cJSON_GetObjectItem(stockJSON, "close");
-	cJSON *date = cJSON_GetObjectItem(stockJSON, "date");
+	cJSON *date = cJSON_GetObjectItem(stockJSON, "datetime");
 
 	Stock *stock = malloc(sizeof(Stock));
 
 	stock->open = atof(open->valuestring);
 	stock->close = atof(close->valuestring);
 	stock->avg = (atof(open->valuestring) + atof(close->valuestring)) / 2.;
+
+	// printf("%s\n", date->valuestring);
 
 	strcpy(stock->date, date->valuestring);
 
@@ -50,7 +52,7 @@ int main()
 	{
 		cJSON *curr = cJSON_GetArrayItem(aapl_values, i);
 		aapl_opens[i] = stock_make(curr);
-		// stock_print(aapl_opens[i]);
+		stock_print(aapl_opens[i]);
 	}
 
 	return 0;
