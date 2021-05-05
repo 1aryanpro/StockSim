@@ -52,5 +52,5 @@ Mkfile.old
 dkms.conf
 
 build/*
-Project\ stuff/graphic-test
-Project\ stuff/test.png
+cairo_practice/graphics-test
+cairo_practice/test.png
