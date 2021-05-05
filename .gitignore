@@ -51,4 +51,6 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
-build/
+build/*
+Project\ stuff/graphic-test
+Project\ stuff/test.png
