@@ -51,6 +51,6 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
-build/*
+build/
 cairo_practice/graphics-test
 cairo_practice/test.png
