@@ -6,35 +6,43 @@
 
 typedef struct
 {
-	float open;
-	float close;
-	float avg;
-	float high;
-	float low;
+	// float open;
+	// float close;
+	// float avg;
+	// float high;
+	// float low;
+	float value;
 	char date[11];
 	char symbol[];
 } MarketStock;
 
+struct MarketStockList
+{
+	MarketStock *stock;
+	struct MarketStockList *next;
+	struct MarketStockList *prev;
+};
+typedef struct MarketStockList MarketStockList;
+
 MarketStock *stock_make(cJSON *stockJSON, char *symbol)
 {
 
-	cJSON *open = cJSON_GetObjectItem(stockJSON, "open");
-	cJSON *close = cJSON_GetObjectItem(stockJSON, "close");
-	cJSON *high = cJSON_GetObjectItem(stockJSON, "high");
-	cJSON *low = cJSON_GetObjectItem(stockJSON, "low");
-	cJSON *date = cJSON_GetObjectItem(stockJSON, "datetime");
+	// float open = atof(cJSON_GetObjectItem(stockJSON, "open")->valuestring);
+	float close = atof(cJSON_GetObjectItem(stockJSON, "close")->valuestring);
+	// float high = atof(cJSON_GetObjectItem(stockJSON, "high")->valuestring);
+	// float low = atof(cJSON_GetObjectItem(stockJSON, "low")->valuestring);
+	char *date = cJSON_GetObjectItem(stockJSON, "datetime")->valuestring;
 
 	MarketStock *stock = malloc(sizeof(MarketStock));
 
-	stock->open = atof(open->valuestring);
-	stock->close = atof(close->valuestring);
-	stock->avg = (atof(open->valuestring) + atof(close->valuestring)) / 2.;
-	stock->high = atof(high->valuestring);
-	stock->low = atof(low->valuestring);
+	// stock->open = open;
+	// stock->close = close;
+	// stock->avg = (open + close) / 2.;
+	// stock->high = high;
+	// stock->low = low;
+	stock->value = close;
 
-	// printf("%s\n", date->valuestring);
-
-	strncpy(stock->date, date->valuestring, 10);
+	strncpy(stock->date, date, 10);
 	stock->date[10] = 0;
 	strcpy(stock->symbol, symbol);
 
@@ -43,7 +51,31 @@ MarketStock *stock_make(cJSON *stockJSON, char *symbol)
 
 void stock_print(MarketStock *stock)
 {
-	printf("{\n\tsymbol: %s\n\tdate: %s\n\topen: %f\n\tclose: %f\n\tavg: %f\n}\n", stock->symbol, stock->date, stock->open, stock->close, stock->avg);
+	// printf("{\n\tsymbol: %s\n\tdate: %s\n\topen: %f\n\tclose: %f\n\tavg: %f\n}\n", stock->symbol, stock->date, stock->open, stock->close, stock->avg);
+	printf("{\n\tsymbol: %s\n\tdate: %s\n\tvalue: %f\n}\n", stock->symbol, stock->date, stock->value);
+}
+
+MarketStockList *StockList_makeElement(MarketStock *stock, MarketStockList *prev)
+{
+	MarketStockList *le = malloc(sizeof(MarketStockList));
+	le->stock = stock;
+	le->prev = prev;
+
+	return le;
+}
+
+MarketStockList *StockList_makeList(cJSON *data)
+{
+	cJSON *meta = cJSON_GetObjectItem(data, "meta");
+	char *symbol = "";
+	strcpy(symbol, cJSON_GetObjectItem(meta, "symbol")->valuestring);
+
+	cJSON *values = cJSON_GetObjectItem(data, "values");
+
+	MarketStock *first = stock_make(cJSON_GetArrayItem(values, 0), symbol);
+	MarketStockList *head = StockList_makeElement(first, NULL);
+
+	return head;
 }
 
 int main(int argc, char *argv[])
