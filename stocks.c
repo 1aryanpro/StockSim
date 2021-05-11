@@ -33,7 +33,7 @@ MarketStock *stock_make(cJSON *stockJSON, char *symbol)
 	// float low = atof(cJSON_GetObjectItem(stockJSON, "low")->valuestring);
 	char *date = cJSON_GetObjectItem(stockJSON, "datetime")->valuestring;
 
-	MarketStock *stock = malloc(sizeof(MarketStock));
+	MarketStock *stock = malloc(sizeof(MarketStock) + strlen(symbol) + 1);
 
 	// stock->open = open;
 	// stock->close = close;
@@ -67,23 +67,61 @@ MarketStockList *StockList_makeElement(MarketStock *stock, MarketStockList *prev
 MarketStockList *StockList_makeList(cJSON *data)
 {
 	cJSON *meta = cJSON_GetObjectItem(data, "meta");
-	char *symbol = "";
-	strcpy(symbol, cJSON_GetObjectItem(meta, "symbol")->valuestring);
+	char *symbol = strdup(cJSON_GetObjectItem(meta, "symbol")->valuestring);
 
 	cJSON *values = cJSON_GetObjectItem(data, "values");
 
 	MarketStock *first = stock_make(cJSON_GetArrayItem(values, 0), symbol);
 	MarketStockList *head = StockList_makeElement(first, NULL);
 
+	MarketStockList *curr = head;
+
+	for (int i = 1; i < cJSON_GetArraySize(values); i++)
+	{
+		MarketStock *stock = stock_make(cJSON_GetArrayItem(values, i), symbol);
+		MarketStockList *next = StockList_makeElement(stock, curr);
+		curr->next = next;
+		curr = next;
+	}
+
+	curr->next = NULL;
+
 	return head;
+}
+
+int StockList_getLen(MarketStockList *list)
+{
+	int count = 1;
+
+	MarketStockList *curr = list;
+
+	while (curr->next != NULL)
+	{
+		count++;
+		curr = curr->next;
+	}
+
+	return count;
+}
+
+void StockList_print(MarketStockList *list)
+{
+	MarketStockList *curr = list;
+
+	while (curr->next != NULL)
+	{
+		stock_print(curr->stock);
+		curr = curr->next;
+	}
 }
 
 int main(int argc, char *argv[])
 {
 	char *data = NULL;
+	char *queryString;
 	if (argc == 1 || (argc == 2 && !strcmp(argv[1], "1")))
 	{
-		data = getStockPrice("AAPL,GOOG");
+		queryString = "AAPL,GOOG";
 	}
 	else
 	{
@@ -92,24 +130,37 @@ int main(int argc, char *argv[])
 		ssize_t bytes_read = getdelim(&data, &len, '\0', fp);
 		if (bytes_read == -1)
 		{
-			data = getStockPrice("AAPL,GOOG");
+			queryString = "AAPL,GOOG";
 		}
+	}
+
+	if (data == NULL)
+	{
+		data = getStockPrice(queryString);
 	}
 
 	cJSON *json = cJSON_Parse(data);
 	free(data);
 
-	cJSON *aapl = cJSON_GetObjectItem(json, "AAPL");
-	cJSON *aapl_values = cJSON_GetObjectItem(aapl, "values");
-	int aapl_valuesLen = cJSON_GetArraySize(aapl_values);
+	cJSON *first = json->child;
 
-	MarketStock *aapl_opens[aapl_valuesLen];
+	size_t stockDataLen = 1;
+	cJSON *curr = first;
 
-	for (int i = 0; i < aapl_valuesLen; i++)
+	while (curr->next != NULL)
 	{
-		cJSON *curr = cJSON_GetArrayItem(aapl_values, i);
-		aapl_opens[i] = stock_make(curr, "AAPL");
-		stock_print(aapl_opens[i]);
+		stockDataLen++;
+		curr = curr->next;
+	}
+
+	MarketStockList *stockData[stockDataLen];
+	curr = first;
+
+	for (int i = 0; i < stockDataLen; i++)
+	{
+		stockData[i] = StockList_makeList(curr);
+		StockList_print(stockData[i]);
+		curr = curr->next;
 	}
 
 	return 0;
