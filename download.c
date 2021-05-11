@@ -76,7 +76,7 @@ char *getStockPrice(char *symbols)
 	size_t len = 0;
 
 	char reqStart[] = "https://api.twelvedata.com/time_series?symbol=";
-	char reqEnd[] = "&interval=30min&apikey=0e79298e4e524595906decac29f21781";
+	char reqEnd[] = "&interval=1day&apikey=0e79298e4e524595906decac29f21781";
 
 	char *request;
 	asprintf(&request, "%s%s%s", reqStart, symbols, reqEnd);
