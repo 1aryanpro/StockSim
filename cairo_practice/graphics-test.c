@@ -2,12 +2,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <SDL.h>
 
 int main(int argc, char *argv[]) {
-  cairo_surface_t *surface;
+  SDL_Surface *sdlsurf = SDL_CreateRGBSurface (0, 500, 500, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0);
+
+  cairo_surface_t *surface = cairo_image_surface_create_for_data (sdlsurf->pixels, CAIRO_FORMAT_RGB24, sdlsurf->w, sdlsurf->h, sdlsurf->pitch);
   cairo_t *cr;
 
-  surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, 200, 200);
   cr = cairo_create (surface);
 
   cairo_set_source_rgb (cr, 0.9, 0.8, 0.9);
@@ -34,5 +36,6 @@ int main(int argc, char *argv[]) {
   cairo_destroy (cr);
   cairo_surface_write_to_png (surface, "test.png");
   cairo_surface_destroy (surface);
+  printf("Success\n");
   return 0;
 }
