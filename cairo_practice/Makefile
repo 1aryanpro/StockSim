@@ -1,5 +1,5 @@
 CC=clang
-CFLAGS=-std=gnu11 -Wall $(shell pkg-config --cflags --libs sdl cairo)
+CFLAGS=-std=gnu11 -Wall $(shell pkg-config --cflags --libs SDL2 cairo)
 DEBUG_CFLAGS=-O1 -g -fno-omit-frame-pointer -fno-optimize-sibling-calls -fsanitize=address
 
 graphics-test: graphics-test.c
