@@ -54,4 +54,3 @@ dkms.conf
 build/
 cairo_practice/graphics-test
 cairo_practice/test.png
-graphics
