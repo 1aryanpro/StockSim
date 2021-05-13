@@ -24,7 +24,13 @@ struct MarketStockList
 };
 typedef struct MarketStockList MarketStockList;
 
-MarketStock *stock_make(cJSON *stockJSON, char *symbol)
+typedef struct
+{
+	float buyValue;
+	char symbol[];
+} OwnedStock;
+
+MarketStock *marketStock_make(cJSON *stockJSON, char *symbol)
 {
 
 	// float open = atof(cJSON_GetObjectItem(stockJSON, "open")->valuestring);
@@ -49,7 +55,7 @@ MarketStock *stock_make(cJSON *stockJSON, char *symbol)
 	return stock;
 }
 
-void stock_print(MarketStock *stock)
+void marketStock_print(MarketStock *stock)
 {
 	// printf("{\n\tsymbol: %s\n\tdate: %s\n\topen: %f\n\tclose: %f\n\tavg: %f\n}\n", stock->symbol, stock->date, stock->open, stock->close, stock->avg);
 	printf("{\n\tsymbol: %s\n\tdate: %s\n\tvalue: %f\n}\n", stock->symbol, stock->date, stock->value);
@@ -71,14 +77,14 @@ MarketStockList *StockList_makeList(cJSON *data)
 
 	cJSON *values = cJSON_GetObjectItem(data, "values");
 
-	MarketStock *first = stock_make(cJSON_GetArrayItem(values, 0), symbol);
+	MarketStock *first = marketStock_make(cJSON_GetArrayItem(values, 0), symbol);
 	MarketStockList *head = StockList_makeElement(first, NULL);
 
 	MarketStockList *curr = head;
 
 	for (int i = 1; i < cJSON_GetArraySize(values); i++)
 	{
-		MarketStock *stock = stock_make(cJSON_GetArrayItem(values, i), symbol);
+		MarketStock *stock = marketStock_make(cJSON_GetArrayItem(values, i), symbol);
 		MarketStockList *next = StockList_makeElement(stock, curr);
 		curr->next = next;
 		curr = next;
@@ -110,9 +116,60 @@ void StockList_print(MarketStockList *list)
 
 	while (curr->next != NULL)
 	{
-		stock_print(curr->stock);
+		marketStock_print(curr->stock);
 		curr = curr->next;
 	}
+}
+
+float *StockList_toArray(MarketStockList *list)
+{
+	int len = StockList_getLen(list);
+	float *output = malloc(sizeof(float) * len);
+	MarketStockList *curr = list;
+
+	for (int i = 0; i < len; i++)
+	{
+		output[i] = curr->stock->value;
+		curr = curr->next;
+	}
+
+	return output;
+}
+
+OwnedStock *stock_make(float buyValue, char *symbol)
+{
+	OwnedStock *stock = malloc(sizeof(OwnedStock) + strlen(symbol) + 1);
+	stock->buyValue = buyValue;
+	strcpy(stock->symbol, symbol);
+	return stock;
+}
+
+OwnedStock *buyStock(MarketStockList **stockVals, size_t len, char *symbol)
+{
+	int index = -1;
+
+	for (size_t i = 0; i < len; i++)
+	{
+		if (strcmp(symbol, stockVals[i]->stock->symbol))
+		{
+			index = i;
+			break;
+		}
+	}
+
+	if (index == -1)
+	{
+		return NULL;
+	}
+
+	MarketStockList *end = stockVals[index];
+	while (end->next != NULL)
+	{
+		end = end->next;
+	}
+
+	OwnedStock *stock = stock_make(end->stock->value, symbol);
+	return stock;
 }
 
 int main(int argc, char *argv[])
