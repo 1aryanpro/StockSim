@@ -16,4 +16,4 @@ debug:  download.c download.h stocks.c
 	$(CC) $(CFLAGS) $(DEBUG_CFLAGS) download.c stocks.c -o build/stockDebug
 
 graphics: graphs.c
-	$(CC) $(CFLAGS) graphs.c -o graphics
+	$(CC) $(CFLAGS) graphs.c -o build/graphics
