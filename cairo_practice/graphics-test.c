@@ -6,9 +6,9 @@
 #include <stdbool.h>
 
 int main(int argc, char *argv[]) {
-  SDL_Surface *sdlsurf = SDL_CreateRGBSurface (0, 500, 500, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0);
+  SDL_Surface *sdlsurf = SDL_CreateRGBSurface (0, 800, 600, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0);
 
-  SDL_Window *window = SDL_CreateWindow ("An SDL2 window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 550, 550, 0);
+  SDL_Window *window = SDL_CreateWindow ("An SDL2 window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, 0);
 
   SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, 0);
 

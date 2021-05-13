@@ -1,8 +1,8 @@
 CC=clang
-CFLAGS=-std=gnu11 -Wall 
+CFLAGS=-std=gnu11 -Wall
 CFLAGS+=$(shell curl-config --cflags) $(shell curl-config --libs)
 CFLAGS+=-I/usr/local/include -I/opt/homebrew/include -lcjson
-CFLAGS+=$(shell pkg-config --cflags --libs cairo)
+CFLAGS+=$(shell pkg-config --cflags --libs cairo SDL2)
 
 DEBUG_CFLAGS=-O1 -g -fno-omit-frame-pointer -fno-optimize-sibling-calls -fsanitize=address
 
@@ -15,3 +15,5 @@ download: download.c
 debug:  download.c download.h stocks.c
 	$(CC) $(CFLAGS) $(DEBUG_CFLAGS) download.c stocks.c -o build/stockDebug
 
+graphics: graphs.c
+	$(CC) $(CFLAGS) graphs.c -o build/graphics
