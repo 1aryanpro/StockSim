@@ -172,6 +172,37 @@ OwnedStock *buyStock(MarketStockList **stockVals, size_t len, char *symbol)
 	return stock;
 }
 
+MarketStockList *queryStocks(const char *queryString, size_t *len)
+{
+	char *data = getStockPrice(queryString);
+	cJSON *json = cJSON_Parse(data);
+
+	cJSON *first = json->child;
+
+	size_t stockDataLen = 1;
+	cJSON *curr = first;
+
+	while (curr->next != NULL)
+	{
+		stockDataLen++;
+		curr = curr->next;
+	}
+
+	MarketStockList *stockData[stockDataLen];
+	curr = first;
+
+	for (int i = 0; i < stockDataLen; i++)
+	{
+		stockData[i] = StockList_makeList(curr);
+		StockList_print(stockData[i]);
+		curr = curr->next;
+	}
+
+	*len = stockDataLen;
+
+	return stockData;
+}
+
 int main(int argc, char *argv[])
 {
 	char *data = NULL;
