@@ -188,7 +188,7 @@ MarketStockList **queryStocks(const char *queryString, size_t *len)
 		curr = curr->next;
 	}
 
-	MarketStockList **stockData = malloc(sizeof(MarketStockList)*stockDataLen);
+	MarketStockList **stockData = malloc(sizeof(MarketStockList) * stockDataLen);
 	curr = first;
 
 	for (int i = 0; i < stockDataLen; i++)
@@ -203,53 +203,53 @@ MarketStockList **queryStocks(const char *queryString, size_t *len)
 	return stockData;
 }
 
-int main(int argc, char *argv[])
-{
-	char *data = NULL;
-	char *queryString;
-	if (argc == 1 || (argc == 2 && !strcmp(argv[1], "1")))
-	{
-		queryString = "AAPL,GOOG";
-	}
-	else
-	{
-		size_t len;
-		FILE *fp = fopen("stockData.json", "r");
-		ssize_t bytes_read = getdelim(&data, &len, '\0', fp);
-		if (bytes_read == -1)
-		{
-			queryString = "AAPL,GOOG";
-		}
-	}
+// int main(int argc, char *argv[])
+// {
+// 	char *data = NULL;
+// 	char *queryString;
+// 	if (argc == 1 || (argc == 2 && !strcmp(argv[1], "1")))
+// 	{
+// 		queryString = "AAPL,GOOG";
+// 	}
+// 	else
+// 	{
+// 		size_t len;
+// 		FILE *fp = fopen("stockData.json", "r");
+// 		ssize_t bytes_read = getdelim(&data, &len, '\0', fp);
+// 		if (bytes_read == -1)
+// 		{
+// 			queryString = "AAPL,GOOG";
+// 		}
+// 	}
 
-	if (data == NULL)
-	{
-		data = getStockPrice(queryString);
-	}
+// 	if (data == NULL)
+// 	{
+// 		data = getStockPrice(queryString);
+// 	}
 
-	cJSON *json = cJSON_Parse(data);
-	free(data);
+// 	cJSON *json = cJSON_Parse(data);
+// 	free(data);
 
-	cJSON *first = json->child;
+// 	cJSON *first = json->child;
 
-	size_t stockDataLen = 1;
-	cJSON *curr = first;
+// 	size_t stockDataLen = 1;
+// 	cJSON *curr = first;
 
-	while (curr->next != NULL)
-	{
-		stockDataLen++;
-		curr = curr->next;
-	}
+// 	while (curr->next != NULL)
+// 	{
+// 		stockDataLen++;
+// 		curr = curr->next;
+// 	}
 
-	MarketStockList *stockData[stockDataLen];
-	curr = first;
+// 	MarketStockList *stockData[stockDataLen];
+// 	curr = first;
 
-	for (int i = 0; i < stockDataLen; i++)
-	{
-		stockData[i] = StockList_makeList(curr);
-		StockList_print(stockData[i]);
-		curr = curr->next;
-	}
+// 	for (int i = 0; i < stockDataLen; i++)
+// 	{
+// 		stockData[i] = StockList_makeList(curr);
+// 		StockList_print(stockData[i]);
+// 		curr = curr->next;
+// 	}
 
-	return 0;
-}
+// 	return 0;
+// }
