@@ -172,7 +172,7 @@ OwnedStock *buyStock(MarketStockList **stockVals, size_t len, char *symbol)
 	return stock;
 }
 
-MarketStockList *queryStocks(const char *queryString, size_t *len)
+MarketStockList **queryStocks(const char *queryString, size_t *len)
 {
 	char *data = getStockPrice(queryString);
 	cJSON *json = cJSON_Parse(data);
@@ -188,7 +188,7 @@ MarketStockList *queryStocks(const char *queryString, size_t *len)
 		curr = curr->next;
 	}
 
-	MarketStockList *stockData[stockDataLen];
+	MarketStockList **stockData = malloc(sizeof(MarketStockList)*stockDataLen);
 	curr = first;
 
 	for (int i = 0; i < stockDataLen; i++)
