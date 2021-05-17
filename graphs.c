@@ -34,6 +34,15 @@ int getGraph(float upper_x, float upper_y, char *title) {
   cairo_set_font_size (cr, 32);
   cairo_show_text (cr, title);
 
+  cairo_move_to (cr, 400, 525);
+  cairo_set_font_size (cr, 20);
+  cairo_show_text (cr, "Time");
+
+  cairo_move_to (cr, 80, 350);
+  cairo_rotate (cr, -M_PI/2);
+  cairo_show_text (cr, "Stock Price");
+
+  cairo_rotate (cr, M_PI/2);
   cairo_move_to (cr, 700, 500);
   cairo_line_to (cr, 100, 500);
   cairo_line_to (cr, 100, 100);
