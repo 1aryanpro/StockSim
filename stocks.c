@@ -203,6 +203,23 @@ MarketStockList **queryStocks(const char *queryString, size_t *len)
 	return stockData;
 }
 
+MarketStockList **queryStocksFromUser(const char *queryString, size_t *len, size_t *selectedIndex, char *selectedSymbol)
+{
+	MarketStockList **stockData = queryStocks(queryString, len);
+	char *printStr = "";
+
+	for (size_t i = 0; i < len; i++)
+	{
+		strcat(printStr, stockData[i]->stock->symbol);
+		if (i != len - 1)
+		{
+			strcat(printStr, ", ");
+		}
+	}
+
+	return stockData;
+}
+
 // int main(int argc, char *argv[])
 // {
 // 	char *data = NULL;
