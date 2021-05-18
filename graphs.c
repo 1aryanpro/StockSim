@@ -4,8 +4,33 @@
 #include <math.h>
 #include <SDL.h>
 #include <stdbool.h>
+#include "stocks.h"
 // #include "download.h"
 // #include <cjson/cJSON.h>
+
+typedef struct {
+  MarketStockList **stockData;
+  size_t symbols;
+  char *title;
+  int high;
+} GraphData;
+
+getValues(const char *queryString, size_t *len) {
+  graph->stockData = queryStocks(“AAPL,GOOG”, &numSymbols);
+  graph->title = "AAPL,GOOG";
+
+  int highestNum = 0;
+  MarketStockList *curr = stockData[i];
+
+  for (int i = 0; i < len; i++) {
+    for (int j = 0; j < StockList_getLen(stockData[i]); j++) {
+      if((int)(curr->stock->value) > highestNum) {
+        highestNum = (int)(curr->stock->value);
+      }
+      curr = curr->next;
+    }
+  }
+}
 
 int getGraph(float upper_x, float upper_y, char *title) {
   SDL_Surface *sdlsurf = SDL_CreateRGBSurface (0, 800, 600, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0);
@@ -85,5 +110,7 @@ int getGraph(float upper_x, float upper_y, char *title) {
 }
 
 int main(int argc, char *argv[]) {
+  GraphData *graph;
+  getValues("AAPL,GOOG", &graph->symbols);
   getGraph(0, 0, "AAPL Stock");
 }
