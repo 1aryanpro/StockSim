@@ -15,7 +15,7 @@ typedef struct {
   int high;
 } GraphData;
 
-GraphData getValues(const char *queryString, size_t *len) {
+GraphData *getValues(const char *queryString, size_t *len) {
   graph->stockData = queryStocks(“AAPL,GOOG”, &numSymbols);
   graph->title = queryString;
 
