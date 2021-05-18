@@ -28,6 +28,7 @@ int StockList_getLen(MarketStockList *list);
 float *StockList_toArray(MarketStockList *list);
 void StockList_print(MarketStockList *list);
 OwnedStock *buyStock(MarketStockList **stockVals, size_t len, char *symbol);
-MarketStockList *queryStocks(const char *queryString, size_t *len);
+MarketStockList **queryStocks(const char *queryString, size_t *len);
+MarketStockList **queryStocksFromUser(const char *queryString, size_t *len, size_t *selectedIndex, char *selectedSymbol);
 
 #endif
