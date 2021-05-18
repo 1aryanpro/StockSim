@@ -136,6 +136,23 @@ float *StockList_toArray(MarketStockList *list)
 	return output;
 }
 
+float StockList_getMax(MarketStockList *list)
+{
+	float max = -1.;
+	MarketStockList *curr = list;
+
+	while (curr->next != NULL)
+	{
+		if (max < curr->stock->value)
+		{
+			max = curr->stock->value;
+		}
+		curr = curr->next;
+	}
+
+	return max;
+}
+
 OwnedStock *stock_make(float buyValue, char *symbol)
 {
 	OwnedStock *stock = malloc(sizeof(OwnedStock) + strlen(symbol) + 1);
@@ -203,19 +220,29 @@ MarketStockList **queryStocks(const char *queryString, size_t *len)
 	return stockData;
 }
 
-MarketStockList **queryStocksFromUser(const char *queryString, size_t *len, size_t *selectedIndex, char *selectedSymbol)
+MarketStockList **queryStocksFromUser(const char *queryString, size_t *len, size_t *selectedIndex, char **selectedSymbol)
 {
 	MarketStockList **stockData = queryStocks(queryString, len);
-	char *printStr = "";
+	char *printStr = "0:";
 
 	for (size_t i = 0; i < len; i++)
 	{
 		strcat(printStr, stockData[i]->stock->symbol);
 		if (i != len - 1)
 		{
-			strcat(printStr, ", ");
+			char *addStr;
+			sprintf(addStr, ", %d: %s", i);
+			strcat(printStr, addStr);
 		}
 	}
+
+	printf("%s\n", printStr);
+
+	do
+	{
+		printf("Selected Index: ");
+		scanf("%d", selectedIndex);
+	} while (selectedIndex >= 0 && selectedIndex < len);
 
 	return stockData;
 }
