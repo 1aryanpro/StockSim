@@ -10,35 +10,35 @@
 
 typedef struct {
   MarketStockList **stockData;
-  size_t symbols;
+  size_t *symbols;
   char *title;
   int high;
 } GraphData;
 
-GraphData *getValues(const char *queryString, size_t *len) {
-  graph->stockData = queryStocks(“AAPL,GOOG”, &numSymbols);
-  graph->title = queryString;
+GraphData *getValues(const char *queryString, GraphData *data) {
+  data->stockData = queryStocks(queryString, data->symbols);
+  data->title = queryString;
 
   int highestNum = 0;
-  MarketStockList *curr = stockData[i];
 
-  for (int i = 0; i < len; i++) {
-    for (int j = 0; j < StockList_getLen(stockData[i]); j++) {
+  for (int i = 0; i < data->symbols; i++) {
+    MarketStockList *curr = data->stockData[i];
+    for (int j = 0; j < StockList_getLen(data->stockData[i]); j++) {
       if((int)(curr->stock->value) > highestNum) {
         highestNum = (int)(curr->stock->value);
       }
       curr = curr->next;
     }
   }
-  graph->high = highestNum;
+  data->high = highestNum;
 
-  return graph;
+  return data;
 }
 
-int getGraph(float upper_x, float upper_y, char *title) {
+int getGraph(GraphData *data) {
   SDL_Surface *sdlsurf = SDL_CreateRGBSurface (0, 800, 600, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0);
 
-  SDL_Window *window = SDL_CreateWindow ("An SDL2 window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, 0);
+  SDL_Window *window = SDL_CreateWindow (data->title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, 0);
 
   SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, 0);
 
@@ -60,7 +60,7 @@ int getGraph(float upper_x, float upper_y, char *title) {
   cairo_move_to (cr, 100, 75);
   cairo_select_font_face (cr, "sans_serif", 0, 1);
   cairo_set_font_size (cr, 32);
-  cairo_show_text (cr, title);
+  cairo_show_text (cr, data->title);
 
   cairo_move_to (cr, 400, 525);
   cairo_set_font_size (cr, 20);
@@ -113,7 +113,7 @@ int getGraph(float upper_x, float upper_y, char *title) {
 }
 
 int main(int argc, char *argv[]) {
-  GraphData *graph;
-  getValues("AAPL,GOOG", &graph->symbols);
-  getGraph(0, 0, "AAPL Stock");
+  GraphData *graph = NULL;
+  getValues("AAPL,GOOG", graph);
+  getGraph(graph);
 }
