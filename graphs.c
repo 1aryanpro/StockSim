@@ -15,9 +15,9 @@ typedef struct {
   int high;
 } GraphData;
 
-getValues(const char *queryString, size_t *len) {
+GraphData getValues(const char *queryString, size_t *len) {
   graph->stockData = queryStocks(“AAPL,GOOG”, &numSymbols);
-  graph->title = "AAPL,GOOG";
+  graph->title = queryString;
 
   int highestNum = 0;
   MarketStockList *curr = stockData[i];
@@ -30,6 +30,9 @@ getValues(const char *queryString, size_t *len) {
       curr = curr->next;
     }
   }
+  graph->high = highestNum;
+
+  return graph;
 }
 
 int getGraph(float upper_x, float upper_y, char *title) {
