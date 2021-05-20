@@ -121,15 +121,30 @@ void StockList_print(MarketStockList *list)
 	}
 }
 
-float *StockList_toArray(MarketStockList *list)
+float *StockList_toValuesArray(MarketStockList *list, size_t *len)
 {
-	int len = StockList_getLen(list);
-	float *output = malloc(sizeof(float) * len);
+	len = StockList_getLen(list);
+	float *output = malloc(*len * sizeof(float));
 	MarketStockList *curr = list;
 
 	for (int i = 0; i < len; i++)
 	{
 		output[i] = curr->stock->value;
+		curr = curr->next;
+	}
+
+	return output;
+}
+
+char **StockList_toDatesArray(MarketStockList *list, size_t *len)
+{
+	len = StockList_getLen(list);
+	char **output = malloc(*len * sizeof(char) * 11);
+	MarketStockList *curr = list;
+
+	for (int i = 0; i < len; i++)
+	{
+		output[i] = strdup(curr->stock->date);
 		curr = curr->next;
 	}
 

@@ -25,7 +25,8 @@ typedef struct
 } OwnedStock;
 
 int StockList_getLen(MarketStockList *list);
-float *StockList_toArray(MarketStockList *list);
+float *StockList_toValuesArray(MarketStockList *list, size_t *len);
+char **StockList_toDatesArray(MarketStockList *list, size_t *len);
 float StockList_getMax(MarketStockList *list);
 void StockList_print(MarketStockList *list);
 MarketStockList **queryStocksFromUser(const char *queryString, size_t *len, size_t *selectedIndex, char **selectedSymbol);
