@@ -123,11 +123,11 @@ void StockList_print(MarketStockList *list)
 
 float *StockList_toValuesArray(MarketStockList *list, size_t *len)
 {
-	len = StockList_getLen(list);
+	*len = StockList_getLen(list);
 	float *output = malloc(*len * sizeof(float));
 	MarketStockList *curr = list;
 
-	for (int i = 0; i < len; i++)
+	for (int i = 0; i < *len; i++)
 	{
 		output[i] = curr->stock->value;
 		curr = curr->next;
@@ -138,11 +138,11 @@ float *StockList_toValuesArray(MarketStockList *list, size_t *len)
 
 char **StockList_toDatesArray(MarketStockList *list, size_t *len)
 {
-	len = StockList_getLen(list);
+	*len = StockList_getLen(list);
 	char **output = malloc(*len * sizeof(char) * 11);
 	MarketStockList *curr = list;
 
-	for (int i = 0; i < len; i++)
+	for (int i = 0; i < *len; i++)
 	{
 		output[i] = strdup(curr->stock->date);
 		curr = curr->next;
@@ -238,26 +238,23 @@ MarketStockList **queryStocks(const char *queryString, size_t *len)
 MarketStockList **queryStocksFromUser(const char *queryString, size_t *len, size_t *selectedIndex, char **selectedSymbol)
 {
 	MarketStockList **stockData = queryStocks(queryString, len);
-	char *printStr = "0:";
 
-	for (size_t i = 0; i < len; i++)
+	for (size_t i = 0; i < *len; i++)
 	{
-		strcat(printStr, stockData[i]->stock->symbol);
-		if (i != len - 1)
+		if (i != 0)
 		{
-			char *addStr;
-			sprintf(addStr, ", %d: %s", i);
-			strcat(printStr, addStr);
+			printf(", ");
 		}
+		printf("%zu: %s", i, stockData[i]->stock->symbol);
 	}
 
-	printf("%s\n", printStr);
+	printf("\n");
 
 	do
 	{
 		printf("Selected Index: ");
-		scanf("%d", selectedIndex);
-	} while (selectedIndex >= 0 && selectedIndex < len);
+		scanf("%zu", selectedIndex);
+	} while (*selectedIndex >= 0 && *selectedIndex < *len);
 
 	return stockData;
 }
