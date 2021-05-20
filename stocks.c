@@ -226,7 +226,7 @@ MarketStockList **queryStocks(const char *queryString, size_t *len)
 	for (int i = 0; i < stockDataLen; i++)
 	{
 		stockData[i] = StockList_makeList(curr);
-		StockList_print(stockData[i]);
+		// StockList_print(stockData[i]);
 		curr = curr->next;
 	}
 
@@ -254,7 +254,10 @@ MarketStockList **queryStocksFromUser(const char *queryString, size_t *len, size
 	{
 		printf("Selected Index: ");
 		scanf("%zu", selectedIndex);
-	} while (*selectedIndex >= 0 && *selectedIndex < *len);
+	} while (*selectedIndex >= *len);
+
+	*selectedSymbol = strdup(stockData[*selectedIndex]->stock->symbol);
+	printf("You Selected %s.\n", *selectedSymbol);
 
 	return stockData;
 }
