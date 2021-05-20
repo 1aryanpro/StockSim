@@ -16,7 +16,7 @@ typedef struct
   char *title;
 } GraphData;
 
-GraphData *getValues(const char *queryString, MarketStockList *stockListData)
+GraphData *getValues(const char *queryString, MarketStockList **stockListData)
 {
   size_t len;
   size_t selectedIndex;
@@ -25,8 +25,12 @@ GraphData *getValues(const char *queryString, MarketStockList *stockListData)
   stockListData = queryStocksFromUser("AAPL,GOOG", &len, &selectedIndex, &symbol);
   GraphData *data = malloc(sizeof(GraphData) + sizeof(char) * strlen(symbol));
 
+
   data->title = strdup(symbol);
-  // data->high = StockList_getMax(data->stockData);
+  MarketStockList *selectedList = stockListData[selectedIndex];
+  data->high = StockList_getMax(selectedList);
+  data->numDates = StockList_getLen(selectedList);
+  data->values = StockList_toValuesArray(selectedList, len);
 
   return data;
 }
@@ -76,9 +80,9 @@ int getGraph(GraphData *data)
   //Drawing graph
   int dayDistance = (int)600/data->numDates;
   int scale = (int)400/data->high;
-  for(int i = numDates-1; i >= 0; i++) {
-    cairo_move_to(cr, (numDates-i)*dayDistance, scale*data->values[i]);
-    cairo_line_to(cr, (numDates-i+1)*dayDistance, scale*data->values[i-1]);
+  for(int i = data->numDates-1; i >= 0; i++) {
+    cairo_move_to(cr, (data->numDates-i)*dayDistance, scale*data->values[i]);
+    cairo_line_to(cr, (data->numDates-i+1)*dayDistance, scale*data->values[i-1]);
   }
 
   //End of Drawing Stuff
@@ -122,7 +126,7 @@ int getGraph(GraphData *data)
 
 int main(int argc, char *argv[])
 {
-  MarketStockList *stockListData = NULL;
+  MarketStockList **stockListData = NULL;
   GraphData *graph = getValues("AAPL,GOOG", stockListData);
   getGraph(graph);
 }
