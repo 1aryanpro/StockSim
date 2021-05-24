@@ -28,7 +28,12 @@ GraphData *getValues(const char *queryString, MarketStockList **stockListData)
   data->title = strdup(symbol);
   MarketStockList *selectedList = stockListData[selectedIndex];
   data->high = StockList_getMax(selectedList);
+<<<<<<< Updated upstream
   data->values = StockList_toValuesArray(selectedList, &(data->numDates));
+=======
+  data->numDates = StockList_getLen(selectedList);
+  data->values = StockList_toValuesArray(selectedList, &len);
+>>>>>>> Stashed changes
 
   return data;
 }
