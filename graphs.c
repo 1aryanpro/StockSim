@@ -25,7 +25,7 @@ GraphData *getValues(const char *queryString, MarketStockList **stockListData)
   size_t selectedIndex;
   char *symbol;
 
-  stockListData = queryStocksFromUser("AAPL,GOOG", &len, &selectedIndex, &symbol);
+  stockListData = queryStocksFromUser("AAPL,GOOG,FB,AMZN,MSFT,TSLA,WMT,TGT", &len, &selectedIndex, &symbol);
   GraphData *data = malloc(sizeof(GraphData) + sizeof(char) * strlen(symbol));
 
   data->title = strdup(symbol);
