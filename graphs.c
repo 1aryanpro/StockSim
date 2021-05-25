@@ -79,11 +79,12 @@ int drawGraph(GraphData *data)
   //Drawing graph
   int dayDistance = 600 / data->numDates;
   int scale = 400 / data->high;
-  for (int i = data->numDates - 1; i >= 0; i++)
+  for (int i = data->numDates - 1; i > 0; i--)
   {
-    // cairo_move_to(cr, (data->numDates - i) * dayDistance, scale * data->values[i]);
-    cairo_line_to(cr, (data->numDates - i + 1) * dayDistance, scale * data->values[i - 1]);
+    cairo_move_to(cr, (data->numDates - i) * dayDistance + 100, scale * data->values[i]);
+    cairo_line_to(cr, (data->numDates - i + 1) * dayDistance + 100, scale * data->values[i - 1]);
   }
+  cairo_stroke(cr);
 
   //End of Drawing Stuff
 
