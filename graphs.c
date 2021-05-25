@@ -4,6 +4,7 @@
 #include <math.h>
 #include <SDL2/SDL.h>
 #include <stdbool.h>
+#include <string.h>
 #include "stocks.h"
 // #include "download.h"
 // #include <cjson/cJSON.h>
@@ -11,9 +12,11 @@
 typedef struct
 {
   float *values;
-  int high;
+  float high;
   size_t numDates;
   char *title;
+  char firstDate[11];
+  char lastDate[11];
 } GraphData;
 
 GraphData *getValues(const char *queryString, MarketStockList **stockListData)
@@ -30,6 +33,13 @@ GraphData *getValues(const char *queryString, MarketStockList **stockListData)
   data->high = StockList_getMax(selectedList);
   data->values = StockList_toValuesArray(selectedList, &(data->numDates));
   data->numDates = StockList_getLen(selectedList);
+
+
+  char **dates = StockList_toDatesArray(selectedList, &len);
+  strncpy(data->firstDate, dates[len-1], 10);
+  data->firstDate[10] = 0;
+  strncpy(data->lastDate, dates[0], 10);
+  data->lastDate[10] = 0;
 
   return data;
 }
@@ -77,14 +87,57 @@ int drawGraph(GraphData *data)
   cairo_stroke(cr);
 
   //Drawing graph
-  int dayDistance = 600 / data->numDates;
-  int scale = 400 / data->high;
-  for (int i = data->numDates - 1; i > 0; i--)
-  {
-    cairo_move_to(cr, (data->numDates - i) * dayDistance + 100, scale * data->values[i]);
-    cairo_line_to(cr, (data->numDates - i + 1) * dayDistance + 100, scale * data->values[i - 1]);
+  float dayDistance = 600 / (data->numDates-1);
+  float scale = -400 / (data->high * 1.1);
+  char maxVal[7];
+  snprintf(maxVal, 7, "%f", data->high * 1.1);
+  // char startDate[11];
+  // snprintf(startDate, 7, "%f", data->firstDate);
+  // char endDate[11];
+  // snprintf(endDate, 7, "%f", data->lastDate);
+  //printf("High Value = %f\n", data->high);
+  if (data->values[data->numDates-1] < data->values[data->numDates-2]) {
+    cairo_set_source_rgb(cr, 0, .8, 0);
   }
-  cairo_stroke(cr);
+  else {
+    cairo_set_source_rgb(cr, .8, 0, 0);
+  }
+  cairo_move_to(cr, 100, scale * data->values[data->numDates-1] + 500);
+  for (int i = data->numDates - 1; i >= 0; i--)
+  {
+    cairo_line_to(cr, (data->numDates - i) * dayDistance + 100, scale * data->values[i] + 500);
+    cairo_stroke(cr);
+    cairo_move_to(cr, (data->numDates - i) * dayDistance + 100, scale * data->values[i] + 500);
+
+    if(i > 0) {
+      if (data->values[i] < data->values[i-1]) {
+        cairo_set_source_rgb(cr, 0, .8, 0);
+      }
+      else {
+        cairo_set_source_rgb(cr, .8, 0, 0);
+      }
+    }
+    printf("Index: %d, Current Value = %f\n", i, data->values[i]);
+  }
+
+  cairo_set_source_rgb(cr, 0, 0, 0);
+  cairo_set_font_size(cr, 14);
+
+  cairo_move_to(cr, 50, 110);
+  cairo_show_text(cr, maxVal);
+
+  cairo_move_to(cr, 85, 500);
+  cairo_show_text(cr, "0");
+
+  cairo_move_to(cr, 110, 585);
+  cairo_rotate(cr, -M_PI / 2);
+  cairo_show_text(cr, data->firstDate);
+  cairo_rotate(cr, M_PI / 2);
+
+  cairo_move_to(cr, 700, 585);
+  cairo_rotate(cr, -M_PI / 2);
+  cairo_show_text(cr, data->lastDate);
+  cairo_rotate(cr, M_PI / 2);
 
   //End of Drawing Stuff
 
