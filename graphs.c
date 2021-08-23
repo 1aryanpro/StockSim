@@ -12,6 +12,7 @@
 typedef struct
 {
   float *values;
+  char **dates;
   float high;
   size_t numDates;
   char *title;
@@ -40,6 +41,7 @@ GraphData *getValues(const char *queryString, MarketStockList **stockListData)
   data->firstDate[10] = 0;
   strncpy(data->lastDate, dates[0], 10);
   data->lastDate[10] = 0;
+  data->dates = dates;
 
   return data;
 }
@@ -117,7 +119,7 @@ int drawGraph(GraphData *data)
         cairo_set_source_rgb(cr, .8, 0, 0);
       }
     }
-    printf("Index: %d, Current Value = %f\n", i, data->values[i]);
+printf("%s = $%.2f\n", data->dates[i], data->values[i]);
   }
 
   cairo_set_source_rgb(cr, 0, 0, 0);
